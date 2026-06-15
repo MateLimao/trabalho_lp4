@@ -240,14 +240,57 @@ document.addEventListener("keydown", function (e) {
 //        - se retornar posição -> use essa posição (trata o wraparound).
 //   4) cobra.unshift(nova) para pôr a cabeça na frente; cobra.pop() tira a cauda.
 function moverCobra() {
-  // TODO 1: implemente o movimento da cobra
+  var cabeca = cobra[0];
+  var dx = 0;
+  var dy = 0;
+  if(direcao == "cima"){
+    dy = -1;
+  }
+  if(direcao == "baixo"){
+    dy = 1;
+  }
+  if(direcao == "esquerda"){
+    dx = -1;
+  }
+    if(direcao == "direita"){
+    dx = 1;
+  }
+
+  var novaPosicao = {x: cabeca.x + dx, y: cabeca.y + dy};
+  if (novaPosicao.x < 0 || novaPosicao.x >= COLUNAS || novaPosicao.y < 0 || novaPosicao.y >= LINHAS){
+    var posicaoBorda = comportamentoDeBorda(novaPosicao);
+    
+    if(posicaoBorda === null){
+      encerrarJogo();
+      return;
+    }
+    else{
+      novaPosicao = posicaoBorda;
+    }
+  }
+    cobra.unshift(novaPosicao);
+    cobra.pop();
+
 }
 
 // TODO 2: verificarColisao() — retornar true se a cobra bateu.
 //   - Colisão com borda: só se !CONFIG.wraparound (cabeça fora da grade).
 //   - Colisão com o corpo: percorra de i=1 até o fim comparando com a cabeça.
 function verificarColisao() {
-  // TODO 2: implemente a verificação de colisão
+  var cabeca = cobra[0];
+
+  if (!CONFIG.wraparound) {
+    if (cabeca.x < 0 || cabeca.x >= COLUNAS || cabeca.y < 0 || cabeca.y >= LINHAS) {
+      return true;
+    }
+  }
+  
+  for (var i = 1; i < cobra.length; i++) {
+    if (cobra[i].x === cabeca.x && cobra[i].y === cabeca.y) {
+      return true;
+    }
+  }
+
   return false;
 }
 
@@ -256,9 +299,28 @@ function verificarColisao() {
 //   - Guarde em 'comida'.
 //   - Defina comidaEspecial = Math.random() < CONFIG.chance_comida_especial.
 function gerarComida() {
-  // TODO 3: implemente a geração da comida
-  comida = { x: 5, y: 5 };   // posição provisória só para o jogo não quebrar
-  comidaEspecial = false;
+  var posicaoValida = false;
+  var novoX, novoY;
+
+  do {
+
+    novoX = Math.floor(Math.random() * COLUNAS);
+    novoY = Math.floor(Math.random() * LINHAS);
+
+    posicaoValida = true;
+
+    for (var i = 0; i < cobra.length; i++) {
+      if (cobra[i].x === novoX && cobra[i].y === novoY) {
+        posicaoValida = false; 
+        break; 
+      }
+    }
+
+  } while (!posicaoValida);
+
+  comida = { x: novoX, y: novoY };
+
+  comidaEspecial = Math.random() < CONFIG.chance_comida_especial;
 }
 
 // Scaffold da Aula 1 — implemente os 3 TODOs acima
