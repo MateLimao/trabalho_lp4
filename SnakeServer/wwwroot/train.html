@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treino da IA — Snake</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- brain.js via CDN (só esta página usa rede neural no browser) -->
+  <script src="https://cdn.jsdelivr.net/npm/brain.js/browser.js"></script>
+  <style>
+    .painel-treino { max-width: 560px; margin: 40px auto; text-align: center; }
+    #barra-fora { background: #1a1a2e; border-radius: 8px; height: 26px; overflow: hidden; margin: 16px 0; }
+    #barra-dentro { background: var(--cor-cobra-cabeca, #4ecca3); height: 100%; width: 0%; transition: width 0.2s; }
+    #log { font-family: monospace; font-size: 13px; text-align: left; background: #12121c;
+           padding: 12px; border-radius: 8px; height: 160px; overflow-y: auto; white-space: pre-wrap; }
+    .status { opacity: 0.8; margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="painel-treino tela">
+    <h1>🧠 Treino da IA</h1>
+    <p class="status">Amostras no dataset: <strong id="contagem">—</strong></p>
+
+    <button id="btn-treinar">Iniciar Treino</button>
+
+    <div id="barra-fora"><div id="barra-dentro"></div></div>
+    <p class="status" id="status">Carregue o dataset e treine.</p>
+    <div id="log"></div>
+
+    <button id="btn-salvar">Salvar no Servidor</button>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    // Rede neural: 9 entradas -> 16 neurônios escondidos -> 3 saídas.
+    var net = new brain.NeuralNetwork({ hiddenLayers: [16] });
+
+    function status(texto) { document.getElementById("status").textContent = texto; }
+    function logar(texto) {
+      var el = document.getElementById("log");
+      el.textContent += texto + "\n";
+      el.scrollTop = el.scrollHeight;
+    }
+
+    // Busca o CSV em /api/export e transforma em dados de treino.
+    async function carregarDataset() {
+      var resp = await fetch("/api/export");
+      var texto = await resp.text();
+      var linhas = texto.trim().split("\n");
+
+      var dados = [];
+      for (var i = 1; i < linhas.length; i++) { // i=1 pula o cabeçalho
+        var cols = linhas[i].split(",");
+        if (cols.length < 11) continue;
+
+        var input = [];
+        for (var k = 0; k < 9; k++) input.push(parseFloat(cols[k]));
+
+        var acao = parseInt(cols[9], 10);        // 0, 1 ou 2
+        var output = [0, 0, 0];
+        output[acao] = 1;                         // one-hot da ação
+
+        dados.push({ input: input, output: output });
+      }
+
+      document.getElementById("contagem").textContent = dados.length;
+      return dados;
+    }
+
+    // Atualiza a barra e o log a cada 100 iterações.
+    function atualizarProgresso(info) {
+      var pct = Math.min(100, Math.round((info.iterations / 2000) * 100));
+      document.getElementById("barra-dentro").style.width = pct + "%";
+      logar("iteração " + info.iterations + " — erro " + info.error.toFixed(4));
+    }
+
+    // TODO 2 (Aula 3): treinar a rede.
+    async function iniciarTreino() {
+      // PASSOS:
+      //   1) var dados = await carregarDataset();
+      //   2) se dados.length === 0, avise e retorne (não dá para treinar sem dados).
+      //   3) chame net.train(dados, { learningRate: 0.1, iterations: 2000,
+      //        errorThresh: 0.05, log: true, logPeriod: 100,
+      //        callback: atualizarProgresso, callbackPeriod: 100 });
+      //   4) ao final, atualize o status para "Treino concluído!".
+      status("TODO 2: implemente iniciarTreino()");
+    }
+
+    // TODO 3 (Aula 3): salvar o modelo treinado no servidor.
+    async function salvarModelo() {
+      // PASSOS:
+      //   1) var json = net.toJSON();
+      //   2) faça POST em /api/model com body = JSON.stringify(json)
+      //      e header Content-Type: application/json.
+      //   3) se resp.ok, status("Modelo salvo!"); senão mostre o erro.
+      status("TODO 3: implemente salvarModelo()");
+    }
+
+    document.getElementById("btn-treinar").addEventListener("click", iniciarTreino);
+    document.getElementById("btn-salvar").addEventListener("click", salvarModelo);
+
+    // Mostra a contagem assim que a página abre.
+    carregarDataset();
+  </script>
+</body>
+</html>
+<!-- Pronto para a Aula 3 — versão completa -->

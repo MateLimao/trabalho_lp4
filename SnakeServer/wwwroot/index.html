@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snake Multiplayer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="config.js"></script>
+</head>
+<body>
+
+  <!-- ───────────── TELA DE INÍCIO ───────────── -->
+  <div id="tela-inicio" class="tela">
+    <h1>🐍 SNAKE</h1>
+    <p class="subtitulo">Digite seu nome e entre na partida!</p>
+    <input id="campo-nome" type="text" maxlength="16" placeholder="Seu nome" />
+    <button id="btn-jogar">Jogar</button>
+  </div>
+
+  <!-- ───────────── TELA DO JOGO ───────────── -->
+  <div id="tela-jogo" class="tela escondido">
+    <div class="area-jogo">
+      <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="painel">
+      <div class="painel-bloco">
+        <span class="painel-rotulo">Jogador</span>
+        <span id="texto-nome" class="painel-valor">—</span>
+      </div>
+      <div class="painel-bloco">
+        <span class="painel-rotulo">Score</span>
+        <span id="texto-score" class="painel-valor">0</span>
+      </div>
+      <div class="painel-bloco">
+        <span class="painel-rotulo">Velocidade (nível)</span>
+        <span id="texto-nivel" class="painel-valor">0</span>
+      </div>
+      <div class="painel-bloco">
+        <span class="painel-rotulo">Ranking</span>
+        <ul id="lista-leaderboard"></ul>
+      </div>
+
+      <!-- Visível só para o professor (?professor=1) -->
+      <button id="btn-torneio" class="escondido">Iniciar Torneio (3 min)</button>
+    </div>
+  </div>
+
+  <!-- ───────────── TELA DE GAME OVER ───────────── -->
+  <div id="tela-game-over" class="tela escondido">
+    <div id="emoji-morte" class="emoji-grande">💀</div>
+    <h2 id="texto-game-over">Fim de jogo!</h2>
+    <p>Seu score: <span id="texto-score-final">0</span></p>
+    <p id="texto-posicao">—</p>
+    <p id="texto-lider">—</p>
+    <p class="reserva">Recorde local: <span id="texto-recorde">0</span></p>
+    <button id="btn-reiniciar">Reiniciar</button>
+  </div>
+
+  <!-- ───────────── OVERLAY DE TORNEIO (oculto por padrão) ───────────── -->
+  <div id="torneio-overlay" class="escondido">
+    <div class="torneio-caixa">
+      <h2>🏆 TORNEIO</h2>
+      <div id="torneio-countdown" class="countdown">3:00</div>
+      <ol id="torneio-top3"></ol>
+    </div>
+  </div>
+
+  <!-- Scripts: config primeiro; game por último (depende dos outros) -->
+  <script src="ui.js"></script>
+  <script src="network.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+/* ============================================================
+   style.css — visual do jogo
+   As cores principais vêm de variáveis CSS (:root).
+   O arquivo ui.js preenche essas variáveis com os valores do CONFIG,
+   então quando você muda uma cor no config.js o CSS acompanha.
+   ============================================================ */
+
+:root {
+  --cor-fundo: #0f0f0f;
+  --cor-cobra-cabeca: #4ecca3;
+  --cor-comida: #e94560;
+  --cor-texto: #eaeaea;
+  /* Layout (preenchidos pelo ui.js a partir do CONFIG) */
+  --fonte-jogo: "Segoe UI", Arial, sans-serif;
+  --fonte-score: "Segoe UI", Arial, sans-serif;
+  --cor-texto-score: #4ecca3;
+  --cor-painel: #12121c;
+  --cor-botao: #4ecca3;
+  --cor-borda-canvas: #2a2a3a;
+  --largura-borda-canvas: 2px;
+  --raio-borda-canvas: 6px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--fonte-jogo);   /* fonte vinda do CONFIG */
+  background: #08080c;
+  color: var(--cor-texto);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Telas centralizadas com flexbox ── */
+.tela {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px;
+}
+
+/* Esconde qualquer elemento. O !important garante que vença outras regras. */
+.escondido {
+  display: none !important;
+}
+
+h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  color: var(--cor-cobra-cabeca);
+}
+
+.subtitulo { opacity: 0.7; }
+
+input {
+  padding: 12px 16px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 2px solid #333;
+  background: #161622;
+  color: var(--cor-texto);
+  text-align: center;
+}
+
+button {
+  padding: 12px 28px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--cor-botao);
+  color: #06120d;
+  font-weight: bold;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.05s;
+}
+
+button:hover { filter: brightness(1.12); }
+button:active { transform: scale(0.97); }
+
+/* ── Tela do jogo: canvas + painel lado a lado ── */
+#tela-jogo {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+canvas {
+  background: var(--cor-fundo);
+  /* Borda do tabuleiro: espessura, cor e arredondamento vêm do CONFIG */
+  border: var(--largura-borda-canvas) solid var(--cor-borda-canvas);
+  border-radius: var(--raio-borda-canvas);
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 200px;
+}
+
+.painel-bloco {
+  display: flex;
+  flex-direction: column;
+  background: var(--cor-painel);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.painel-rotulo {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.55;
+}
+
+.painel-valor {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--cor-cobra-cabeca);
+}
+
+/* O número do score tem fonte e cor próprias (personalizáveis no CONFIG) */
+#texto-score {
+  color: var(--cor-texto-score);
+  font-family: var(--fonte-score);
+}
+
+#lista-leaderboard {
+  list-style: none;
+  font-size: 15px;
+}
+
+#lista-leaderboard li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid #20202e;
+}
+
+#lista-leaderboard .tag {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-left: 4px;
+}
+
+.emoji-grande { font-size: 72px; }
+
+/* ── Animação do escudo pós-respawn (cobra piscando) ── */
+.cobra-piscando {
+  animation: piscar 0.4s linear infinite;
+}
+
+@keyframes piscar {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.25; }
+  100% { opacity: 1; }
+}
+
+/* ── Texto de reserva (recorde local) menor na tela de game over ── */
+.reserva { opacity: 0.5; font-size: 13px; }
+
+#btn-torneio { background: #f5a623; color: #1a1200; }
+
+/* ── Overlay do torneio (Aula 4) ── */
+#torneio-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.torneio-caixa {
+  text-align: center;
+  background: #12121c;
+  padding: 32px 48px;
+  border-radius: 16px;
+  border: 2px solid #f5a623;
+}
+
+.torneio-caixa h2 { color: #f5a623; letter-spacing: 3px; }
+
+.countdown {
+  font-size: 84px;
+  font-weight: bold;
+  margin: 12px 0;
+  color: var(--cor-cobra-cabeca);
+}
+
+#torneio-top3 {
+  list-style: none;
+  font-size: 20px;
+  text-align: left;
+  display: inline-block;
+}
+
+#torneio-top3 li { padding: 6px 0; }
